@@ -1,13 +1,29 @@
 
 # DL
 # rev 12-Feb-2020
-# simple program to detect and display the phase of the moon 
-# using Julia 1.3.1
+# simple program to detect and display the phase of the moon using Julia 1.3.1
 
 using AstroLib;
 using Dates; 
 using PyPlot;
 
+
+Base.@ccallable function julia_main(ARGS::Vector{String})::Cint
+
+    try
+	
+	real_main();
+
+    catch
+        Base.invokelatest(Base.display_error, Base.catch_stack())
+        return 1
+    end
+
+    return 0  
+end
+
+
+function real_main()
 
 jdm1 = jdcnv( Dates.now()-Dates.Day(1) );
 jd =   jdcnv( Dates.now() ); # returns the number of Julian days for current time
@@ -43,11 +59,11 @@ points = dhl1:Dates.Hour(1):dhl2;
 figure(1)
 clf();
 plot(points, mphase.(jdcnv.(points)))
-plot(Dates.now(),k,"or",Markersize = 6);
+plot(Dates.now(),kn,"or",Markersize = 6);
 xlabel("Time");
 ylabel("Moon Phase");
 title(moonMotion);
 grid();
 
-
+end
 
