@@ -2,6 +2,8 @@
 # DL
 # rev 12-Feb-2020
 # simple program to detect and display the phase of the moon using Julia 1.3.1
+# using PackageCompiler
+# build_executable("moonphasetest.jl")
 
 using AstroLib;
 using Dates; 
@@ -13,6 +15,7 @@ Base.@ccallable function julia_main(ARGS::Vector{String})::Cint
     try
 	
 	real_main();
+	##wait_for_key();
 
     catch
         Base.invokelatest(Base.display_error, Base.catch_stack())
@@ -65,5 +68,17 @@ ylabel("Moon Phase");
 title(moonMotion);
 grid();
 
+show(); ## call GUI explicitly in non-interactive mode!
+
+end
+
+
+function wait_for_key(; prompt = "press any key", io = stdin)
+    setraw!(raw) = ccall(:jl_tty_set_mode, Int32, (Ptr{Cvoid},Int32), io.handle, raw)
+    print(io, prompt)
+    setraw!(true)
+    read(io, 1)
+    setraw!(false)
+    nothing
 end
 
